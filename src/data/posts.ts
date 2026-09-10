@@ -7,6 +7,8 @@ export interface Post {
   category: string;
   tags: string[];
   cover?: string;
+  viewCount?: number;
+  readingTime?: number;
 }
 
 export const posts: Post[] = [
@@ -45,6 +47,8 @@ export const posts: Post[] = [
     date: '2026-09-10',
     category: '随笔',
     tags: ['介绍', '开始'],
+    viewCount: 128,
+    readingTime: 3,
   },
   {
     slug: 'react-hooks-guide',
@@ -124,6 +128,8 @@ React Hooks 让函数组件拥有了 class 组件的所有能力，同时代码�
     date: '2026-09-08',
     category: '技术',
     tags: ['React', 'JavaScript', '前端'],
+    viewCount: 256,
+    readingTime: 5,
   },
   {
     slug: 'tailwind-css-tips',
@@ -201,6 +207,8 @@ Tailwind CSS 的核心理念是"组合优于继承"，通过组合小的实用�
     date: '2026-09-05',
     category: '技术',
     tags: ['CSS', 'Tailwind', '前端'],
+    viewCount: 189,
+    readingTime: 4,
   },
   {
     slug: 'static-site-advantages',
@@ -258,6 +266,8 @@ Tailwind CSS 的核心理念是"组合优于继承"，通过组合小的实用�
     date: '2026-09-01',
     category: '随笔',
     tags: ['静态网站', 'Astro', 'Web'],
+    viewCount: 342,
+    readingTime: 6,
   },
   {
     slug: 'getting-started-with-vite',
@@ -340,6 +350,8 @@ Vite 的开发体验让人耳目一新。对于新项目，强烈推荐使用 Vi
     date: '2026-08-28',
     category: '技术',
     tags: ['Vite', '前端', '构建工具'],
+    viewCount: 167,
+    readingTime: 5,
   },
 ];
 
