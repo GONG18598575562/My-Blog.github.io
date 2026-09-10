@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { posts, getCategories, getTags } from '../data/posts';
+import { posts, getCategories, getTags, getSubcategories } from '../data/posts';
 import { getReadingHistory } from '../utils/storage';
 import { siteConfig } from '../data/config';
 
@@ -105,16 +105,16 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* 标签云卡片 */}
+      {/* 子分类卡片 */}
       <div className="bg-card/75 dark:bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 dark:border-border/50 p-4 transition-all duration-200 hover:shadow-lg">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>
             </span>
-            标签
+            子分类
           </h2>
           {selectedTag && (
             <button
@@ -126,20 +126,36 @@ export function HomePage() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => handleTagClick(tag)}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 ${
-                selectedTag === tag
-                  ? 'shadow-sm scale-105 text-white bg-gradient-to-r from-emerald-500 to-teal-500'
-                  : 'hover:scale-105 text-foreground bg-muted/50 hover:bg-muted'
-              }`}
-            >
-              #{tag}
-            </button>
-          ))}
+        <div className="space-y-3">
+          {categories.map((category) => {
+            const subcategories = getSubcategories(category);
+            if (subcategories.length === 0) return null;
+            return (
+              <div key={category}>
+                <div className="text-xs font-medium text-muted-foreground mb-1.5 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  {category}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {subcategories.map((sub) => (
+                    <button
+                      key={sub}
+                      onClick={() => handleTagClick(sub)}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 ${
+                        selectedTag === sub
+                          ? 'shadow-sm scale-105 text-white bg-gradient-to-r from-emerald-500 to-teal-500'
+                          : 'hover:scale-105 text-foreground bg-muted/50 hover:bg-muted'
+                      }`}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

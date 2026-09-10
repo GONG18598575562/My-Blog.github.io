@@ -36,8 +36,7 @@ export function Header() {
 
   const navLinks = [
     { path: '/', label: '首页' },
-    { path: '/reading-history', label: '阅读历史' },
-    { path: '/about', label: '关于' },
+    { path: '/profile', label: '个人中心' },
   ];
 
   return (
@@ -122,21 +121,6 @@ export function Header() {
             {/* 主题切换 */}
             <ThemeToggle />
 
-            {/* 个人中心 */}
-            <Link
-              to="/profile"
-              className={`p-2 rounded-md transition-colors ${
-                isActive('/profile')
-                  ? 'bg-primary/10 text-primary'
-                  : 'hover:bg-accent text-foreground'
-              }`}
-              aria-label="个人中心"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </Link>
-
             {/* 移动菜单按钮 */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -171,17 +155,6 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/profile"
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/profile')
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-foreground hover:bg-accent'
-                }`}
-              >
-                个人中心
-              </Link>
-
               <form onSubmit={handleSearch} className="px-4 py-2">
                 <input
                   type="text"
