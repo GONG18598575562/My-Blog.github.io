@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { posts, getCategories, getTags, type Tag } from '../data/posts';
 import { getReadingHistory } from '../utils/storage';
+import { siteConfig } from '../data/config';
 import { NotificationCarousel } from '../components/NotificationCarousel';
 
 export function HomePage() {
