@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { posts, getCategories, getTags, getSubcategories } from '../data/posts';
+import { posts, getCategories, getTags, type Tag } from '../data/posts';
 import { getReadingHistory } from '../utils/storage';
-import { siteConfig } from '../data/config';
+import { NotificationCarousel } from '../components/NotificationCarousel';
 
 export function HomePage() {
   const categories = getCategories();
@@ -105,16 +105,16 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* 子分类卡片 */}
+      {/* 标签云卡片 */}
       <div className="bg-card/75 dark:bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 dark:border-border/50 p-4 transition-all duration-200 hover:shadow-lg">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
               </svg>
             </span>
-            子分类
+            标签
           </h2>
           {selectedTag && (
             <button
@@ -126,36 +126,50 @@ export function HomePage() {
           )}
         </div>
 
-        <div className="space-y-3">
-          {categories.map((category) => {
-            const subcategories = getSubcategories(category);
-            if (subcategories.length === 0) return null;
-            return (
-              <div key={category}>
-                <div className="text-xs font-medium text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                  </svg>
-                  {category}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {subcategories.map((sub) => (
-                    <button
-                      key={sub}
-                      onClick={() => handleTagClick(sub)}
-                      className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 ${
-                        selectedTag === sub
-                          ? 'shadow-sm scale-105 text-white bg-gradient-to-r from-emerald-500 to-teal-500'
-                          : 'hover:scale-105 text-foreground bg-muted/50 hover:bg-muted'
-                      }`}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map((tag: Tag) => (
+            <div
+              key={tag.slug}
+              className="group relative"
+            >
+              <button
+                onClick={() => handleTagClick(tag.slug)}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 ${
+                  selectedTag === tag.slug
+                    ? 'shadow-sm scale-105 text-white'
+                    : 'hover:scale-105 text-foreground'
+                }`}
+                style={{
+                  backgroundColor: selectedTag === tag.slug
+                    ? tag.color
+                    : selectedTag
+                      ? `${tag.color}20`
+                      : `${tag.color}20`,
+                  borderWidth: '1px',
+                  borderColor: selectedTag === tag.slug
+                    ? 'transparent'
+                    : tag.color
+                }}
+              >
+                #{tag.name}
+                <span className="ml-0.5 text-xs opacity-70">
+                  {tag.postCount}
+                </span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTagClick(tag.slug);
+                }}
+                className="absolute -top-0.5 -right-0.5 p-0.5 rounded-full bg-card shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-muted z-10"
+                title="查看标签详情"
+              >
+                <svg className="w-2.5 h-2.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -228,73 +242,9 @@ export function HomePage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-10">
 
-        {/* 博客介绍区域 */}
-        <div className="mb-8 animate-fade-in">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-6 sm:p-8 lg:p-10 shadow-xl">
-            {/* 装饰性背景图案 */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white"></div>
-              <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-white"></div>
-              <div className="absolute top-1/2 right-1/4 w-20 h-20 rounded-full bg-white"></div>
-            </div>
-
-            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-              {/* 用户头像 */}
-              {siteConfig.user.avatarUrl ? (
-                <img
-                  src={siteConfig.user.avatarUrl}
-                  alt={siteConfig.user.displayName}
-                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover border-4 border-white/30 shadow-lg flex-shrink-0"
-                />
-              ) : (
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-2xl sm:text-3xl border-4 border-white/30 shadow-lg flex-shrink-0">
-                  {siteConfig.user.displayName.charAt(0).toUpperCase()}
-                </div>
-              )}
-
-              <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                  {siteConfig.site_name}
-                </h1>
-                <p className="text-white/90 text-sm sm:text-base leading-relaxed mb-3">
-                  {siteConfig.site_description}
-                </p>
-                <div className="flex flex-wrap items-center gap-3 text-white/80 text-xs sm:text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    {posts.length} 篇文章
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    {categories.length} 个分类
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                    </svg>
-                    {tags.length} 个标签
-                  </span>
-                  {siteConfig.social_github && (
-                    <a
-                      href={siteConfig.social_github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 hover:text-white transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                      </svg>
-                      GitHub
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* 通知轮播 */}
+        <div className="mb-6 sm:mb-8">
+          <NotificationCarousel />
         </div>
 
         {/* 移动端筛选按钮 */}

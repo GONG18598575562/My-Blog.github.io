@@ -183,6 +183,16 @@
   animation: fade-in 0.3s ease-out;
 }
 
+/* 通知轮播进度条动画 */
+@keyframes carousel-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.animate-carousel-progress {
+  animation: carousel-progress 6s linear forwards;
+}
+
 /* 响应式优化 */
 @media (max-width: 640px) {
   :root {

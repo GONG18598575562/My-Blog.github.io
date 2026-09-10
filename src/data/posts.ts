@@ -1,3 +1,10 @@
+export interface Tag {
+  name: string;
+  slug: string;
+  color: string;
+  postCount: number;
+}
+
 export interface Post {
   slug: string;
   title: string;
@@ -366,16 +373,44 @@ export function getCategories(): string[] {
   return [...new Set(posts.map(p => p.category))];
 }
 
-// 获取分类下的子分类
-export function getSubcategories(category: string): string[] {
-  return [...new Set(posts.filter(p => p.category === category && p.subcategory).map(p => p.subcategory!))];
-}
+// 获取所有标签（带颜色和计数）
+export function getTags(): Tag[] {
+  const tagMap = new Map<string, { count: number }>();
+  posts.forEach(p => p.tags.forEach(t => {
+    const existing = tagMap.get(t);
+    if (existing) {
+      existing.count++;
+    } else {
+      tagMap.set(t, { count: 1 });
+    }
+  }));
 
-// 获取所有标签
-export function getTags(): string[] {
-  const tagSet = new Set<string>();
-  posts.forEach(p => p.tags.forEach(t => tagSet.add(t)));
-  return [...tagSet];
+  // 预定义标签颜色
+  const tagColors: Record<string, string> = {
+    '介绍': '#3B82F6',
+    '开始': '#8B5CF6',
+    'React': '#06B6D4',
+    'JavaScript': '#F59E0B',
+    '前端': '#10B981',
+    'CSS': '#EC4899',
+    'Tailwind': '#06B6D4',
+    '静态网站': '#8B5CF6',
+    'Astro': '#F97316',
+    'Web': '#6366F1',
+    'Vite': '#8B5CF6',
+    '构建工具': '#14B8A6',
+    '日常': '#F59E0B',
+    '思考': '#EC4899',
+  };
+
+  const defaultColors = ['#3B82F6', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EC4899', '#6366F1', '#F97316'];
+
+  return Array.from(tagMap.entries()).map(([name, { count }], index) => ({
+    name,
+    slug: name,
+    color: tagColors[name] || defaultColors[index % defaultColors.length],
+    postCount: count,
+  }));
 }
 
 // 根据 slug 获取文章
@@ -391,6 +426,18 @@ export function getPostsByCategory(category: string): Post[] {
 // 根据标签筛选文章
 export function getPostsByTag(tag: string): Post[] {
   return posts.filter(p => p.tags.includes(tag));
+}
+
+// 获取子分类列表（带计数）
+export function getSubcategories(category: string): { name: string; count: number }[] {
+  const subMap = new Map<string, number>();
+  posts
+    .filter(p => p.category === category && p.subcategory)
+    .forEach(p => {
+      const sub = p.subcategory!;
+      subMap.set(sub, (subMap.get(sub) || 0) + 1);
+    });
+  return Array.from(subMap.entries()).map(([name, count]) => ({ name, count }));
 }
 
 // 搜索文章
