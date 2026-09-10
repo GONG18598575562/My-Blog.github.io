@@ -1,14 +1,23 @@
+import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { getPostBySlug } from '../data/posts';
+import { addToHistory } from '../utils/storage';
 import { NotFoundPage } from './NotFoundPage';
 import 'highlight.js/styles/github-dark.css';
 
 export function PostPage() {
   const { slug } = useParams<{ slug: string }>();
   const post = slug ? getPostBySlug(slug) : undefined;
+
+  // 记录阅读历史
+  useEffect(() => {
+    if (post) {
+      addToHistory(post.slug, post.title);
+    }
+  }, [post]);
 
   if (!post) {
     return <NotFoundPage />;

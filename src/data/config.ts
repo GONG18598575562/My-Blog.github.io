@@ -10,4 +10,9 @@ export const siteConfig = {
   footer_text: '© 2026 我的博客 All rights reserved',
   footer_tech_stack: ['React', 'TypeScript', 'Tailwind CSS', 'Vite'],
   posts_per_page: 10,
+  // 静态用户信息（用于展示头像和名称）
+  user: {
+    displayName: 'Admin',
+    avatarUrl: '', // 留空则显示默认头像
+  },
 };

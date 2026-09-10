@@ -7,6 +7,8 @@ import { SearchPage } from './pages/SearchPage';
 import { AboutPage } from './pages/AboutPage';
 import { CategoryPage } from './pages/CategoryPage';
 import { TagPage } from './pages/TagPage';
+import { ReadingHistoryPage } from './pages/ReadingHistoryPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 function AppRoutes() {
@@ -18,6 +20,8 @@ function AppRoutes() {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/categories/:slug" element={<CategoryPage />} />
       <Route path="/tags/:slug" element={<TagPage />} />
+      <Route path="/reading-history" element={<ReadingHistoryPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

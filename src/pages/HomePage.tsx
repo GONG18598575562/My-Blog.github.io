@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { posts, getCategories, getTags } from '../data/posts';
-import { siteConfig } from '../data/config';
+import { getReadingHistory } from '../utils/storage';
 
 export function HomePage() {
   const categories = getCategories();
@@ -18,6 +18,15 @@ export function HomePage() {
       if (selectedTag && !p.tags.includes(selectedTag)) return false;
       return true;
     });
+
+  // 热门文章（按阅读历史排序，如果没有历史则按日期）
+  const history = getReadingHistory();
+  const hotPosts = [...posts].sort((a, b) => {
+    const aViews = history.filter(h => h.slug === a.slug).length;
+    const bViews = history.filter(h => h.slug === b.slug).length;
+    if (aViews !== bViews) return bViews - aViews;
+    return b.date.localeCompare(a.date);
+  });
 
   const handleCategoryClick = (category: string) => {
     if (selectedCategory === category) {
@@ -42,8 +51,8 @@ export function HomePage() {
     setSelectedTag(null);
   };
 
-  // 侧边栏内容
-  const SidebarContent = () => (
+  // 左侧边栏内容
+  const LeftSidebar = () => (
     <div className="space-y-4">
       {/* 分类卡片 */}
       <div className="bg-card/75 dark:bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 dark:border-border/50 p-4 transition-all duration-200 hover:shadow-lg">
@@ -135,6 +144,55 @@ export function HomePage() {
     </div>
   );
 
+  // 右侧边栏 - 热门文章
+  const RightSidebar = () => (
+    <div className="space-y-4">
+      {/* 热门文章卡片 */}
+      <div className="bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 p-4">
+        <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+          <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-white">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+            </svg>
+          </span>
+          热门文章
+        </h3>
+        <div className="space-y-3">
+          {hotPosts.slice(0, 8).map((post, index) => (
+            <Link
+              key={post.slug}
+              to={`/posts/${post.slug}`}
+              className="flex items-start gap-3 group"
+            >
+              <span className={`flex-shrink-0 w-5 h-5 rounded text-xs font-bold flex items-center justify-center ${
+                index === 0 ? 'bg-red-500 text-white' :
+                index === 1 ? 'bg-orange-500 text-white' :
+                index === 2 ? 'bg-yellow-500 text-white' :
+                'bg-muted text-muted-foreground'
+              }`}>
+                {index + 1}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                  {post.title}
+                </p>
+                <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                  <span>{post.category}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+          {hotPosts.length === 0 && (
+            <div className="text-center py-4 text-muted-foreground text-sm">
+              暂无文章
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-10">
@@ -163,7 +221,7 @@ export function HomePage() {
 
           {mobileSidebarOpen && (
             <div className="mt-3 animate-fade-in">
-              <SidebarContent />
+              <LeftSidebar />
             </div>
           )}
         </div>
@@ -174,12 +232,55 @@ export function HomePage() {
           {/* 左侧: 分类和标签 - 桌面端显示 */}
           <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-20">
-              <SidebarContent />
+              <LeftSidebar />
             </div>
           </div>
 
           {/* 中间: 文章列表 */}
-          <div className="lg:col-span-9 xl:col-span-9">
+          <div className="lg:col-span-6 xl:col-span-6">
+            {/* 手机端/平板端热门文章 - 横向滚动卡片 */}
+            <div className="xl:hidden mb-6">
+              <div className="bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 p-4">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-white">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                    </svg>
+                  </span>
+                  热门文章
+                </h3>
+                <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+                  {hotPosts.slice(0, 5).map((post, index) => (
+                    <Link
+                      key={post.slug}
+                      to={`/posts/${post.slug}`}
+                      className="flex-shrink-0 w-[140px] sm:w-[160px] md:w-[180px] p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`flex-shrink-0 w-5 h-5 rounded text-xs font-bold flex items-center justify-center ${
+                          index === 0 ? 'bg-red-500 text-white' :
+                          index === 1 ? 'bg-orange-500 text-white' :
+                          index === 2 ? 'bg-yellow-500 text-white' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {index + 1}
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                        {post.title}
+                      </p>
+                    </Link>
+                  ))}
+                  {hotPosts.length === 0 && (
+                    <div className="text-center py-4 text-muted-foreground text-sm w-full">
+                      暂无文章
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* 当前过滤标签 */}
             {(selectedCategory || selectedTag) && (
               <div className="mb-4 flex flex-wrap items-center gap-2 animate-fade-in">
@@ -220,22 +321,21 @@ export function HomePage() {
                 {(selectedCategory || selectedTag) && (
                   <button
                     onClick={clearFilters}
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                    className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg transition-all duration-200 font-medium text-sm"
                   >
-                    清除筛选
+                    查看所有文章
                   </button>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-                {sortedPosts.map((post) => (
-                  <Link
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 gap-4 sm:gap-5">
+                {sortedPosts.map((post, index) => (
+                  <article
                     key={post.slug}
-                    to={`/posts/${post.slug}`}
-                    className="group bg-card/80 rounded-xl shadow-md border border-border/50 overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+                    className="group bg-card/80 backdrop-blur-sm rounded-xl shadow-md border border-border/60 overflow-hidden hover:shadow-xl transition-all duration-300 animate-fade-in flex flex-col"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    {/* 文章卡片内容 */}
-                    <div className="p-4 sm:p-5">
+                    <div className="flex-1 p-3.5 sm:p-4 flex flex-col">
                       {/* 分类标签 */}
                       <div className="flex items-center gap-2 mb-3">
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-primary/10 text-primary">
@@ -244,31 +344,57 @@ export function HomePage() {
                       </div>
 
                       {/* 标题 */}
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
-                        {post.title}
-                      </h3>
+                      <Link to={`/posts/${post.slug}`} className="flex items-start gap-1.5">
+                        <h2 className="text-sm sm:text-base font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                          {post.title}
+                        </h2>
+                      </Link>
 
                       {/* 摘要 */}
-                      <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-                        {post.excerpt}
-                      </p>
+                      {post.excerpt && (
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-3 flex-1 leading-relaxed line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                      )}
 
-                      {/* 底部信息 */}
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{post.date}</span>
-                        <div className="flex gap-1.5">
-                          {post.tags.slice(0, 2).map((tag) => (
-                            <span key={tag} className="text-xs opacity-70">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
+                      {/* 元信息 */}
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-3">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {post.date}
+                        </span>
+                      </div>
+
+                      {/* 标签 */}
+                      <div className="flex flex-wrap items-center gap-1">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <button
+                            key={tag}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleTagClick(tag);
+                            }}
+                            className="px-1.5 py-0.5 rounded-full text-xs font-medium border hover:scale-105 transition-transform bg-muted/50 text-foreground border-border/50"
+                          >
+                            #{tag}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  </Link>
+                  </article>
                 ))}
               </div>
             )}
+          </div>
+
+          {/* 右侧: 热门文章 - 桌面端显示 */}
+          <div className="hidden xl:block xl:col-span-3">
+            <div className="sticky top-20">
+              <RightSidebar />
+            </div>
           </div>
         </div>
       </div>
