@@ -13,6 +13,6 @@ export const siteConfig = {
   // 静态用户信息（用于展示头像和名称）
   user: {
     displayName: 'GONG',
-    avatarUrl: '', // 留空则显示默认头像
+    avatarUrl: '/avatar.jpg',
   },
 };
