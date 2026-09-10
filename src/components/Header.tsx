@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { siteConfig } from '../data/config';
 
@@ -7,13 +7,28 @@ export function Header() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [scrolled, setScrolled] = useState(false);
+
+  // 监听滚动
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 关闭移动菜单
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
-      setMobileMenuOpen(false);
     }
   };
 
@@ -25,19 +40,30 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="flex items-center justify-between h-14">
+    <header
+      className={`sticky top-0 z-50 w-full border-b border-border transition-all duration-300 ${
+        scrolled
+          ? 'bg-background/80 backdrop-blur-md shadow-sm'
+          : 'bg-background'
+      }`}
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-lg font-bold text-gray-900 dark:text-white">
-              {siteConfig.site_name}
-            </span>
-            {siteConfig.site_subtitle && (
-              <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
-                {siteConfig.site_subtitle}
+          <Link
+            to="/"
+            className="flex items-center space-x-3 group"
+          >
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                {siteConfig.site_name}
               </span>
-            )}
+              {siteConfig.site_subtitle && (
+                <span className="text-xs text-muted-foreground hidden sm:block">
+                  {siteConfig.site_subtitle}
+                </span>
+              )}
+            </div>
           </Link>
 
           {/* 桌面导航 */}
@@ -46,10 +72,10 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   isActive(link.path)
-                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-foreground hover:bg-accent hover:text-accent-foreground'
                 }`}
               >
                 {link.label}
@@ -57,25 +83,39 @@ export function Header() {
             ))}
           </nav>
 
-          {/* 搜索和移动菜单 */}
+          {/* 搜索和功能区 */}
           <div className="flex items-center space-x-2">
-            <form onSubmit={handleSearch} className="hidden md:block">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索..."
-                className="w-40 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+            {/* 搜索框 */}
+            <form onSubmit={handleSearch} className="hidden lg:block">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="搜索文章..."
+                  className="w-48 xl:w-64 pl-10 pr-4 py-2 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </form>
+
+            {/* 主题切换 */}
+            <ThemeToggle />
 
             {/* 移动菜单按钮 */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="md:hidden p-2 rounded-md hover:bg-accent transition-colors"
               aria-label="菜单"
             >
-              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -88,35 +128,76 @@ export function Header() {
 
         {/* 移动菜单 */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-3 border-t border-gray-200 dark:border-gray-800">
+          <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <nav className="flex flex-col space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive(link.path)
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-foreground hover:bg-accent'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
+
+              <form onSubmit={handleSearch} className="px-4 py-2">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="搜索文章..."
+                  className="w-full px-4 py-2 text-sm bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </form>
             </nav>
-            <form onSubmit={handleSearch} className="mt-2 px-3">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索文章..."
-                className="w-full px-3 py-2 text-sm bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </form>
           </div>
         )}
       </div>
     </header>
+  );
+}
+
+// 主题切换组件
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
+
+  return (
+    <button
+      onClick={() => setIsDark(!isDark)}
+      className="p-2 rounded-md hover:bg-accent transition-colors"
+      aria-label={isDark ? '切换到亮色模式' : '切换到暗色模式'}
+    >
+      {isDark ? (
+        <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      )}
+    </button>
   );
 }
