@@ -126,14 +126,14 @@ export function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
 
           {/* 左侧: 分类 - 桌面端显示 */}
-          <div className="hidden lg:block lg:col-span-3">
+          <div className="hidden lg:block lg:col-span-2">
             <div className="sticky top-20">
               <LeftSidebar />
             </div>
           </div>
 
           {/* 中间: 文章列表 */}
-          <div className="lg:col-span-9">
+          <div className="lg:col-span-10">
 
             {/* 当前过滤标签 */}
             {selectedCategory && (
