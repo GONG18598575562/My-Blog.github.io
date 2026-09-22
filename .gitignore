@@ -19,3 +19,16 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# 系统临时/socket 泄漏（历史上曾从 /tmp 意外掉进来，加规则预防再次被跟踪）
+.X11-unix/
+.XIM-unix/
+.ICE-unix/
+.font-unix/
+.Test-unix/
+systemd-private-*/
+snap-private-tmp/
+mcp-*/
+vscode-*/
+com.google.Chrome.*/
+*.sock
