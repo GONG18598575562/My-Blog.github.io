@@ -1,7 +1,7 @@
 ---
 title: Python 面向对象编程
 date: 2026-09-28
-category: 技术
+category: 知识
 subcategory: 学习
 tags: [技术, 学习]
 ---
