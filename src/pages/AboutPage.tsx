@@ -1,8 +1,10 @@
 import { siteConfig } from '../data/config';
+import { SEO } from '../components/SEO';
 
 export function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="关于" description={siteConfig.site_description} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 页面标题 */}
         <div className="text-center mb-12">

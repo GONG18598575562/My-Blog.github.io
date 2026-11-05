@@ -59,18 +59,6 @@ const defaultNotifications: CarouselItem[] = [
     content: '在这里我将分享技术见解和生活感悟，探索编程的乐趣和生活的意义',
     type: 'info',
   },
-  {
-    id: 2,
-    title: 'React 技术分享',
-    content: '最新发布了 React Hooks 入门指南，深入浅出讲解 React 核心概念',
-    type: 'success',
-  },
-  {
-    id: 3,
-    title: '持续更新中',
-    content: '博客内容持续更新，涵盖前端开发、CSS 技巧、构建工具等主题',
-    type: 'update',
-  },
 ];
 
 export function NotificationCarousel() {

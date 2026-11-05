@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { siteConfig } from '../data/config';
 
 export function Footer() {
@@ -24,12 +25,12 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-foreground/70 dark:text-foreground/70">
               {Object.entries(quickLinks).map(([label, url], index) => (
                 <li key={index}>
-                  <a
-                    href={String(url)}
+                  <Link
+                    to={url}
                     className="hover:text-primary-600 transition-colors"
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

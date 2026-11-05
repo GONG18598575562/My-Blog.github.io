@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../data/config';
 import { getReadingHistory, ReadingHistoryItem } from '../utils/storage';
+import { SEO } from '../components/SEO';
 
 export function ProfilePage() {
   const [history, setHistory] = useState<ReadingHistoryItem[]>([]);
@@ -15,6 +16,7 @@ export function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="个人中心" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 面包屑导航 */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
@@ -50,18 +52,10 @@ export function ProfilePage() {
         </div>
 
         {/* 统计卡片 */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 mb-6">
           <div className="bg-card rounded-xl shadow-md border border-border p-5 text-center">
             <div className="text-3xl font-bold text-primary mb-1">{totalReads}</div>
             <div className="text-sm text-muted-foreground">阅读文章</div>
-          </div>
-          <div className="bg-card rounded-xl shadow-md border border-border p-5 text-center">
-            <div className="text-3xl font-bold text-emerald-500 mb-1">0</div>
-            <div className="text-sm text-muted-foreground">点赞</div>
-          </div>
-          <div className="bg-card rounded-xl shadow-md border border-border p-5 text-center">
-            <div className="text-3xl font-bold text-purple-500 mb-1">0</div>
-            <div className="text-sm text-muted-foreground">收藏</div>
           </div>
         </div>
 

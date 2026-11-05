@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export function NotFoundPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <SEO title="404" description="页面未找到" />
       <div className="text-center">
         <h1 className="text-8xl font-bold text-muted-foreground/30 mb-4">
           404

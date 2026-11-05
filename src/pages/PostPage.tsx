@@ -3,9 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import Giscus from '@giscus/react';
 import { getPostBySlug } from '../data/posts';
 import { addToHistory } from '../utils/storage';
 import { NotFoundPage } from './NotFoundPage';
+import { SEO } from '../components/SEO';
 import 'highlight.js/styles/github-dark.css';
 
 export function PostPage() {
@@ -25,6 +27,12 @@ export function PostPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        keywords={post.tags.join(', ')}
+        type="article"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 面包屑导航 */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
@@ -45,6 +53,17 @@ export function PostPage() {
 
         {/* 文章头部 */}
         <header className="mb-8">
+          {/* 封面图 */}
+          {post.cover && (
+            <div className="mb-6 rounded-xl overflow-hidden">
+              <img
+                src={post.cover}
+                alt={post.title}
+                className="w-full max-h-[400px] object-cover"
+              />
+            </div>
+          )}
+
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             {post.title}
           </h1>
@@ -94,6 +113,26 @@ export function PostPage() {
             </ReactMarkdown>
           </div>
         </article>
+
+        {/* 评论区域 */}
+        <div className="bg-card rounded-xl shadow-md border border-border p-6 sm:p-8 mb-8">
+          <h2 className="text-lg font-semibold text-foreground mb-4">评论</h2>
+          <Giscus
+            id="comments"
+            repo="GONG18598575562/My-Blog.github.io"
+            repoId="R_kgDOUUMvtw"
+            category="Announcements"
+            categoryId="DIC_kwDOUUMvt84DKbeA"
+            mapping="pathname"
+            strict="0"
+            reactionsEnabled="1"
+            emitMetadata="0"
+            inputPosition="bottom"
+            theme="preferred_color_scheme"
+            lang="zh-CN"
+            loading="lazy"
+          />
+        </div>
 
         {/* 底部导航 */}
         <footer className="flex items-center justify-between">

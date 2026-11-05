@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { getPostsByCategory } from '../data/posts';
+import { SEO } from '../components/SEO';
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -7,6 +8,7 @@ export function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title={`分类：${slug}`} description={`分类"${slug}"下的所有文章`} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 面包屑导航 */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">

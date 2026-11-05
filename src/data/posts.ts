@@ -17,8 +17,6 @@ export interface Post {
   subcategory?: string;
   tags: string[];
   cover?: string;
-  viewCount?: number;
-  readingTime?: number;
 }
 
 // 构建时由 Vite 把 ../../posts/*.md 全部作为原始字符串打包进来。
@@ -128,8 +126,6 @@ function loadPosts(): Post[] {
       excerpt,
       content: processedContent,
       cover,
-      viewCount: typeof data.viewCount === 'number' ? data.viewCount : undefined,
-      readingTime: typeof data.readingTime === 'number' ? data.readingTime : undefined,
     });
   }
   // 按日期倒序（新文章在前）

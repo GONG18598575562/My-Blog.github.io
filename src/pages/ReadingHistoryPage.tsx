@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getReadingHistory, clearHistory, ReadingHistoryItem } from '../utils/storage';
 import { getPostBySlug } from '../data/posts';
+import { SEO } from '../components/SEO';
 
 export function ReadingHistoryPage() {
   const [history, setHistory] = useState<ReadingHistoryItem[]>([]);
@@ -19,6 +20,7 @@ export function ReadingHistoryPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="阅读历史" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 面包屑导航 */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
