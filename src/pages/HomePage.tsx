@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { posts, getCategories, getTags } from '../data/posts';
+import { posts, getCategories } from '../data/posts';
 import { siteConfig } from '../data/config';
 import { NotificationCarousel } from '../components/NotificationCarousel';
 import { SEO } from '../components/SEO';
@@ -8,7 +8,6 @@ import { Avatar } from '../components/Avatar';
 
 export function HomePage() {
   const categories = getCategories();
-  const tags = getTags();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -27,28 +26,28 @@ export function HomePage() {
       <SEO />
 
       {/* Hero 区域 */}
-      <div className="relative overflow-hidden bg-card border-b border-border">
-        {/* 渐变装饰 */}
+      <div className="relative overflow-hidden bg-card/50 border-b border-border/50">
+        {/* 动态渐变背景 */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/[0.04] to-transparent" />
-          <div className="absolute bottom-0 left-0 w-96 h-48 bg-gradient-to-tr from-primary/[0.03] to-transparent rounded-full blur-3xl" />
-          <div className="absolute top-10 right-20 w-64 h-64 bg-gradient-to-bl from-blue-400/[0.03] to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-primary/[0.06] via-purple-500/[0.03] to-transparent" />
+          <div className="absolute -bottom-20 -left-20 w-[500px] h-[500px] bg-gradient-to-tr from-primary/[0.08] to-transparent rounded-full blur-3xl animate-pulse-glow" />
+          <div className="absolute top-10 right-1/4 w-80 h-80 bg-gradient-to-bl from-violet-500/[0.05] to-transparent rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
           <div className="flex items-center gap-6 sm:gap-8">
             <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="lg" />
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gradient">
                 {siteConfig.site_name}
               </h1>
-              <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-xl leading-relaxed">
+              <p className="text-muted-foreground mt-3 text-base sm:text-lg max-w-xl leading-relaxed">
                 {siteConfig.site_description}
               </p>
-              <div className="flex items-center gap-3 mt-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+              <div className="flex items-center gap-3 mt-5">
+                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20">
                   {posts.length} 篇文章
                 </span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-muted/50 text-muted-foreground border border-border/50">
                   {categories.length} 个分类
                 </span>
               </div>
@@ -57,7 +56,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         {/* 通知轮播 */}
         <div className="mb-6">
@@ -174,7 +173,7 @@ export function HomePage() {
                 {sortedPosts.map((post, index) => (
                   <article
                     key={post.slug}
-                    className="card-magazine group animate-fade-in"
+                    className="card-glass group animate-fade-in"
                     style={{ animationDelay: `${index * 60}ms` }}
                   >
                     <Link to={`/posts/${post.slug}`} className="block">
@@ -232,9 +231,9 @@ export function HomePage() {
 
           {/* 右侧边栏 */}
           <aside className="hidden xl:block xl:col-span-3">
-            <div className="sticky top-20 space-y-6">
+            <div className="sticky top-20">
               {/* 最新文章 */}
-              <div className="bg-card rounded-xl border border-border p-5">
+              <div className="card-glass p-5">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">最新文章</h3>
                 <div className="space-y-3">
                   {latestPosts.map((post) => (
@@ -247,23 +246,6 @@ export function HomePage() {
                         {post.title}
                       </h4>
                       <time className="text-xs text-muted-foreground mt-0.5 block">{post.date}</time>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* 标签云 */}
-              <div className="bg-card rounded-xl border border-border p-5">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">标签</h3>
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <Link
-                      key={tag.name}
-                      to={`/tags/${tag.slug}`}
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                    >
-                      {tag.name}
-                      <span className="ml-1.5 text-[10px] opacity-60">{tag.postCount}</span>
                     </Link>
                   ))}
                 </div>

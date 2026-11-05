@@ -19,7 +19,7 @@ export function Avatar({ src, alt, name, size = 'md' }: AvatarProps) {
 
   if (!src || imgError) {
     return (
-      <div className={`${sizeMap[size]} rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold ring-2 ring-border`}>
+      <div className={`${sizeMap[size]} rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold ring-2 ring-primary/30 glow-sm`}>
         {initial}
       </div>
     );
@@ -30,7 +30,7 @@ export function Avatar({ src, alt, name, size = 'md' }: AvatarProps) {
       src={src}
       alt={alt || name}
       onError={() => setImgError(true)}
-      className={`${sizeMap[size]} rounded-full object-cover ring-2 ring-border`}
+      className={`${sizeMap[size]} rounded-full object-cover ring-2 ring-primary/30`}
     />
   );
 }

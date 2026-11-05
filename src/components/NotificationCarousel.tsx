@@ -43,8 +43,8 @@ export function NotificationCarousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative overflow-hidden bg-card rounded-xl border border-border px-5 py-3.5 flex items-center gap-3">
-        <div className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary" />
+      <div className="relative overflow-hidden card-glass px-5 py-3.5 flex items-center gap-3">
+        <div className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary glow-sm" />
         <div className="flex-1 min-w-0">
           <span className="text-sm font-medium text-foreground">{current.title}</span>
           <span className="text-sm text-muted-foreground ml-2 hidden sm:inline">{current.content}</span>

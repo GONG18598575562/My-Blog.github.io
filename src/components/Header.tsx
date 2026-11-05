@@ -40,11 +40,11 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? 'bg-background/90 backdrop-blur-md border-b border-border'
-          : 'bg-background border-b border-transparent'
+          ? 'bg-background/80 backdrop-blur-xl border-b border-border/50'
+          : 'bg-background/50 backdrop-blur-sm border-b border-transparent'
       }`}
     >
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
@@ -244,19 +244,19 @@ function ThemeToggle() {
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
-      if (saved) return saved === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved) return saved !== 'light';
+      return true;
     }
-    return false;
+    return true;
   });
 
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
-      root.classList.add('dark');
+      root.classList.remove('light');
       localStorage.setItem('theme', 'dark');
     } else {
-      root.classList.remove('dark');
+      root.classList.add('light');
       localStorage.setItem('theme', 'light');
     }
   }, [isDark]);
