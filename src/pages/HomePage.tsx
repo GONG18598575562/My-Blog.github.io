@@ -1,150 +1,153 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { posts, getCategories } from '../data/posts';
+import { posts, getCategories, getTags } from '../data/posts';
 import { siteConfig } from '../data/config';
 import { NotificationCarousel } from '../components/NotificationCarousel';
 import { SEO } from '../components/SEO';
 
 export function HomePage() {
   const categories = getCategories();
+  const tags = getTags();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // 按日期倒序排列
   const sortedPosts = [...posts]
     .sort((a, b) => b.date.localeCompare(a.date))
-    .filter(p => {
-      if (selectedCategory && p.category !== selectedCategory) return false;
-      return true;
-    });
+    .filter(p => !selectedCategory || p.category === selectedCategory);
+
+  const latestPosts = [...posts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
 
   const handleCategoryClick = (category: string) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
+    setSelectedCategory(prev => prev === category ? null : category);
   };
-
-  const clearFilters = () => {
-    setSelectedCategory(null);
-  };
-
-  // 左侧边栏内容
-  const LeftSidebar = () => (
-    <div className="space-y-4">
-      {/* 分类卡片 */}
-      <div className="bg-card/75 dark:bg-card/75 backdrop-blur-lg rounded-xl shadow-md border border-border/50 dark:border-border/50 p-4 transition-all duration-200 hover:shadow-lg">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-            </span>
-            分类
-          </h2>
-          {selectedCategory && (
-            <button
-              onClick={clearFilters}
-              className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
-            >
-              清除
-            </button>
-          )}
-        </div>
-
-        <div className="space-y-1">
-          {categories.map((category) => {
-            const count = posts.filter(p => p.category === category).length;
-            return (
-              <div
-                key={category}
-                className={`group w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
-                  selectedCategory === category
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm'
-                    : 'bg-muted/50 hover:bg-muted text-foreground'
-                }`}
-                onClick={() => handleCategoryClick(category)}
-              >
-                <span className="flex items-center gap-2 text-sm font-medium truncate">
-                  {category}
-                </span>
-                <span className={`text-xs px-1.5 py-0.5 rounded ${
-                  selectedCategory === category
-                    ? 'bg-card/20'
-                    : 'bg-muted'
-                }`}>
-                  {count}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-background">
       <SEO />
-      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-10">
+
+      {/* Hero 区域 */}
+      <div className="relative overflow-hidden bg-card border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.06]" />
+        <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
+          <div className="flex items-center gap-5 sm:gap-6">
+            {siteConfig.user.avatarUrl ? (
+              <img
+                src={siteConfig.user.avatarUrl}
+                alt={siteConfig.user.displayName}
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-2 ring-border"
+              />
+            ) : (
+              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl sm:text-3xl ring-2 ring-border">
+                {siteConfig.user.displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+                {siteConfig.site_name}
+              </h1>
+              <p className="text-muted-foreground mt-1.5 text-sm sm:text-base max-w-lg">
+                {siteConfig.site_description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         {/* 通知轮播 */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-6">
           <NotificationCarousel />
         </div>
 
-        {/* 移动端筛选按钮 */}
+        {/* 移动端筛选 */}
         <div className="lg:hidden mb-4">
           <button
-            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-card/80 backdrop-blur-md rounded-xl shadow-md border border-border/60 text-foreground"
+            onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-card rounded-xl border border-border text-foreground text-sm font-medium"
           >
-            <span className="flex items-center gap-2 font-medium">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            <span className="flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              筛选与分类
+              {selectedCategory ? `分类: ${selectedCategory}` : '筛选分类'}
             </span>
-            <svg
-              className={`w-5 h-5 transition-transform ${mobileSidebarOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className={`w-4 h-4 transition-transform ${mobileFilterOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
-          {mobileSidebarOpen && (
-            <div className="mt-3 animate-fade-in">
-              <LeftSidebar />
+          {mobileFilterOpen && (
+            <div className="mt-3 p-4 bg-card rounded-xl border border-border animate-fade-in">
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => { handleCategoryClick(category); setMobileFilterOpen(false); }}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                      selectedCategory === category
+                        ? 'bg-primary text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
-        {/* 主内容区域 - 响应式网格布局 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+        {/* 三栏布局 */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
 
-          {/* 左侧: 分类 - 桌面端显示 */}
-          <div className="hidden lg:block lg:col-span-2">
-            <div className="sticky top-20">
-              <LeftSidebar />
+          {/* 左侧边栏 - 分类 */}
+          <aside className="hidden lg:block lg:col-span-2">
+            <div className="sticky top-20 space-y-6">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">分类</h2>
+                  {selectedCategory && (
+                    <button onClick={() => setSelectedCategory(null)} className="text-xs text-primary hover:text-primary/80 transition-colors">
+                      清除
+                    </button>
+                  )}
+                </div>
+                <nav className="space-y-0.5">
+                  {categories.map((category) => {
+                    const count = posts.filter(p => p.category === category).length;
+                    return (
+                      <button
+                        key={category}
+                        onClick={() => handleCategoryClick(category)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                          selectedCategory === category
+                            ? 'bg-primary text-white font-medium'
+                            : 'text-foreground hover:bg-muted font-normal'
+                        }`}
+                      >
+                        <span>{category}</span>
+                        <span className={`text-xs ${selectedCategory === category ? 'opacity-70' : 'text-muted-foreground'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
             </div>
-          </div>
+          </aside>
 
-          {/* 中间: 文章列表 */}
-          <div className="lg:col-span-10">
-
-            {/* 当前过滤标签 */}
+          {/* 中间 - 文章列表 */}
+          <div className="lg:col-span-7">
+            {/* 筛选状态 */}
             {selectedCategory && (
-              <div className="mb-4 flex flex-wrap items-center gap-2 animate-fade-in">
-                <span className="text-xs text-muted-foreground">筛选:</span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+              <div className="mb-5 flex items-center gap-2 animate-fade-in">
+                <span className="text-sm text-muted-foreground">当前筛选:</span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {selectedCategory}
-                  <button onClick={clearFilters} className="hover:text-primary/80">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button onClick={() => setSelectedCategory(null)} className="hover:text-primary/70 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -152,99 +155,117 @@ export function HomePage() {
               </div>
             )}
 
-            {/* 文章列表 */}
             {sortedPosts.length === 0 ? (
-              <div className="bg-card/80 rounded-xl shadow-md p-8 text-center">
-                <svg className="mx-auto h-14 w-14 text-muted-foreground mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <div className="bg-card rounded-xl border border-border p-12 text-center">
+                <svg className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <h3 className="text-lg font-semibold text-foreground mb-2">暂无文章</h3>
                 <p className="text-muted-foreground text-sm">
-                  {selectedCategory ? '当前筛选条件下没有文章' : '还没有发布任何文章'}
+                  {selectedCategory ? '当前分类下没有文章' : '还没有发布任何文章'}
                 </p>
-                {selectedCategory && (
-                  <button
-                    onClick={clearFilters}
-                    className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg transition-all duration-200 font-medium text-sm"
-                  >
-                    查看所有文章
-                  </button>
-                )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 gap-4 sm:gap-5">
+              <div className="space-y-5">
                 {sortedPosts.map((post, index) => (
                   <article
                     key={post.slug}
-                    className="group bg-card/80 backdrop-blur-sm rounded-xl shadow-md border border-border/60 overflow-hidden hover:shadow-xl transition-all duration-300 animate-fade-in flex flex-col"
-                    style={{ animationDelay: `${index * 50}ms` }}
+                    className="card-magazine group animate-fade-in"
+                    style={{ animationDelay: `${index * 60}ms` }}
                   >
-                    {/* 封面图 */}
                     <Link to={`/posts/${post.slug}`} className="block">
+                      {/* 封面图 */}
                       {post.cover ? (
-                        <img
-                          src={post.cover}
-                          alt={post.title}
-                          className="w-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        <div className="aspect-[21/9] overflow-hidden rounded-t-xl">
+                          <img
+                            src={post.cover}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
+                          />
+                        </div>
                       ) : (
-                        <div className="w-full aspect-[16/9] bg-gradient-to-br from-blue-500/20 to-indigo-500/20 dark:from-blue-400/10 dark:to-indigo-400/10 flex items-center justify-center">
-                          <svg className="w-10 h-10 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <div className="aspect-[21/9] overflow-hidden rounded-t-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                          <svg className="w-12 h-12 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
                       )}
-                    </Link>
 
-                    <div className="flex-1 p-3.5 sm:p-4 flex flex-col">
-                      {/* 分类标签 */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-primary/10 text-primary">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                          </svg>
-                          {post.category}
-                        </span>
-                      </div>
+                      {/* 内容 */}
+                      <div className="p-5 sm:p-6">
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <span className="text-xs font-medium text-primary">{post.category}</span>
+                          <span className="text-muted-foreground/30">·</span>
+                          <time className="text-xs text-muted-foreground">{post.date}</time>
+                        </div>
 
-                      {/* 标题 */}
-                      <Link to={`/posts/${post.slug}`} className="flex items-start gap-1.5">
-                        <h2 className="text-sm sm:text-base font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                        <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2 text-balance">
                           {post.title}
                         </h2>
-                      </Link>
 
-                      {/* 摘要 */}
-                      {post.excerpt && (
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-3 flex-1 leading-relaxed line-clamp-2">
-                          {post.excerpt}
-                        </p>
-                      )}
+                        {post.excerpt && (
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                            {post.excerpt}
+                          </p>
+                        )}
 
-                      {/* 元信息 - 作者、日期 */}
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        {/* 作者 */}
-                        <span className="flex items-center gap-1 truncate">
-                          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                          <span className="truncate max-w-[60px]">{siteConfig.site_author}</span>
-                        </span>
-
-                        {/* 日期 */}
-                        <span className="flex items-center gap-0.5 flex-shrink-0">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                          {post.date}
-                        </span>
+                        {post.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-3">
+                            {post.tags.slice(0, 3).map((tag) => (
+                              <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    </Link>
                   </article>
                 ))}
               </div>
             )}
           </div>
+
+          {/* 右侧边栏 */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-20 space-y-6">
+              {/* 最新文章 */}
+              <div className="bg-card rounded-xl border border-border p-5">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">最新文章</h3>
+                <div className="space-y-3">
+                  {latestPosts.map((post) => (
+                    <Link
+                      key={post.slug}
+                      to={`/posts/${post.slug}`}
+                      className="block group"
+                    >
+                      <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1 leading-snug">
+                        {post.title}
+                      </h4>
+                      <time className="text-xs text-muted-foreground mt-0.5 block">{post.date}</time>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* 标签云 */}
+              <div className="bg-card rounded-xl border border-border p-5">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">标签</h3>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Link
+                      key={tag.name}
+                      to={`/tags/${tag.slug}`}
+                      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      {tag.name}
+                      <span className="ml-1.5 text-[10px] opacity-60">{tag.postCount}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

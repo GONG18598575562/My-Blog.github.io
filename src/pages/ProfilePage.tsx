@@ -17,72 +17,69 @@ export function ProfilePage() {
   return (
     <div className="min-h-screen bg-background">
       <SEO title="个人中心" />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 面包屑导航 */}
-        <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* 面包屑 */}
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link to="/" className="hover:text-primary transition-colors">首页</Link>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
           <span className="text-foreground">个人中心</span>
         </nav>
 
-        {/* 用户信息卡片 */}
-        <div className="bg-card rounded-xl shadow-md border border-border p-6 sm:p-8 mb-6">
-          <div className="flex items-center gap-4 sm:gap-6">
-            {/* 头像 */}
+        {/* 用户信息 */}
+        <div className="bg-card rounded-xl border border-border p-6 sm:p-8 mb-6">
+          <div className="flex items-center gap-5">
             {siteConfig.user.avatarUrl ? (
               <img
                 src={siteConfig.user.avatarUrl}
                 alt={siteConfig.user.displayName}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover border-4 border-primary/30"
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-2 ring-border"
               />
             ) : (
-              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl border-4 border-primary/30">
+              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl sm:text-3xl ring-2 ring-border">
                 {siteConfig.user.displayName.charAt(0).toUpperCase()}
               </div>
             )}
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
                 {siteConfig.user.displayName}
               </h1>
-              <p className="text-muted-foreground mt-1">{siteConfig.site_description}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{siteConfig.site_description}</p>
             </div>
           </div>
         </div>
 
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 mb-6">
-          <div className="bg-card rounded-xl shadow-md border border-border p-5 text-center">
-            <div className="text-3xl font-bold text-primary mb-1">{totalReads}</div>
-            <div className="text-sm text-muted-foreground">阅读文章</div>
-          </div>
+        {/* 统计 */}
+        <div className="bg-card rounded-xl border border-border p-5 text-center mb-6">
+          <div className="text-3xl font-bold text-primary mb-1">{totalReads}</div>
+          <div className="text-sm text-muted-foreground">已读文章</div>
         </div>
 
         {/* 最近阅读 */}
-        <div className="bg-card rounded-xl shadow-md border border-border p-6">
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">最近阅读</h2>
-            <Link
-              to="/reading-history"
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
-            >
-              查看全部 →
-            </Link>
+            <h2 className="text-base font-semibold text-foreground">最近阅读</h2>
+            {recentReads.length > 0 && (
+              <Link
+                to="/reading-history"
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                查看全部 →
+              </Link>
+            )}
           </div>
 
           {recentReads.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-1">
               {recentReads.map((item) => (
                 <Link
                   key={item.slug}
                   to={`/posts/${item.slug}`}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors"
                 >
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-foreground truncate">
-                      {item.title}
-                    </h3>
+                    <h3 className="text-sm font-medium text-foreground truncate">{item.title}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {new Date(item.viewedAt).toLocaleDateString('zh-CN', {
                         month: '2-digit',
@@ -92,20 +89,23 @@ export function ProfilePage() {
                       })}
                     </p>
                   </div>
-                  <svg className="w-4 h-4 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="text-center py-6">
-              <p className="text-muted-foreground text-sm">暂无阅读记录</p>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground text-sm mb-3">暂无阅读记录</p>
               <Link
                 to="/"
-                className="inline-block mt-3 text-sm text-primary hover:text-primary/80 transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
               >
-                去阅读文章 →
+                去阅读文章
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
           )}
