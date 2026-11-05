@@ -116,10 +116,10 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
 
         {/* 通知轮播 */}
-        <div className="mb-4">
+        <div className="mb-6">
           <NotificationCarousel />
         </div>
 
@@ -162,7 +162,7 @@ export function HomePage() {
         </div>
 
         {/* 三栏布局 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-10">
 
           {/* 左侧边栏 - 分类 */}
           <aside className="hidden lg:block lg:col-span-2">
@@ -229,7 +229,7 @@ export function HomePage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
                 {sortedPosts.map((post, index) => (
                   <article
                     key={post.slug}
@@ -255,14 +255,14 @@ export function HomePage() {
                       )}
 
                       {/* 内容 */}
-                      <div className="p-4 sm:p-5">
-                        <div className="flex items-center gap-2 mb-2">
+                      <div className="p-5 sm:p-6">
+                        <div className="flex items-center gap-2 mb-3">
                           <span className="text-xs font-medium text-primary">{post.category}</span>
                           <span className="text-muted-foreground/30">·</span>
                           <time className="text-xs text-muted-foreground">{post.date}</time>
                         </div>
 
-                        <h2 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1.5 text-balance">
+                        <h2 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2 text-balance">
                           {post.title}
                         </h2>
 
@@ -273,7 +273,7 @@ export function HomePage() {
                         )}
 
                         {post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-2.5">
+                          <div className="flex flex-wrap gap-1.5 mt-3">
                             {post.tags.slice(0, 3).map((tag) => (
                               <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
                                 #{tag}

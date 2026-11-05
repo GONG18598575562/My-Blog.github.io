@@ -35,7 +35,7 @@ export function PostPage() {
         type="article"
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* 封面图 */}
         {post.cover && (
           <div className="mb-8 rounded-xl overflow-hidden border border-border/50">
