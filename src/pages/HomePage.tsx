@@ -5,6 +5,15 @@ import { siteConfig } from '../data/config';
 import { NotificationCarousel } from '../components/NotificationCarousel';
 import { SEO } from '../components/SEO';
 import { Avatar } from '../components/Avatar';
+import { TypingEffect } from '../components/TypingEffect';
+import { TerminalCard } from '../components/TerminalCard';
+
+const HERO_PHRASES = [
+  '分享技术见解',
+  '探索编程乐趣',
+  '记录生活感悟',
+  '保持好奇，持续创造',
+];
 
 export function HomePage() {
   const categories = getCategories();
@@ -40,33 +49,77 @@ export function HomePage() {
           <div className="absolute -bottom-20 -left-20 w-[500px] h-[500px] bg-gradient-to-tr from-primary/[0.08] to-transparent rounded-full blur-3xl animate-pulse-glow" />
           <div className="absolute top-10 right-1/4 w-80 h-80 bg-gradient-to-bl from-violet-500/[0.05] to-transparent rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
-          <div className="flex items-center gap-6 sm:gap-8">
-            <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="lg" />
-            <div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gradient">
-                {siteConfig.site_name}
-              </h1>
-              <p className="text-muted-foreground mt-3 text-base sm:text-lg max-w-xl leading-relaxed">
-                {siteConfig.site_description}
-              </p>
-              <div className="flex items-center gap-3 mt-5">
+        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-14">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 xl:gap-16">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-5 sm:gap-7">
+                <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="lg" />
+                <div className="min-w-0">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gradient">
+                    {siteConfig.site_name}
+                  </h1>
+                  <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-xl leading-relaxed">
+                    {siteConfig.site_description}
+                  </p>
+                </div>
+              </div>
+
+              {/* 打字机标语 */}
+              <div className="mt-4 font-mono text-sm sm:text-base text-primary">
+                <span className="text-muted-foreground/70">$ </span>
+                <TypingEffect phrases={HERO_PHRASES} />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 mt-4">
                 <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/20">
                   {posts.length} 篇文章
                 </span>
                 <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-muted/50 text-muted-foreground border border-border/50">
                   {categories.length} 个分类
                 </span>
+
+                <span className="w-px h-5 bg-border hidden sm:block" />
+
+                {/* 社交链接 */}
+                <a
+                  href={siteConfig.social_github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="GitHub"
+                  aria-label="GitHub"
+                  className="p-2 rounded-lg border border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/40 transition-all hover:shadow-[0_0_12px_rgba(var(--primary-rgb),0.25)]"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                </a>
+                <a
+                  href={`${import.meta.env.BASE_URL}rss.xml`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="RSS 订阅"
+                  aria-label="RSS 订阅"
+                  className="p-2 rounded-lg border border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/40 transition-all hover:shadow-[0_0_12px_rgba(var(--primary-rgb),0.25)]"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 17a3 3 0 1 0 6 0 3 3 0 0 0-6 0zM3 7a13 13 0 0 1 13 13h3A16 16 0 0 0 3 4v3z" />
+                  </svg>
+                </a>
               </div>
+            </div>
+
+            {/* 终端卡片 */}
+            <div className="hidden lg:block lg:w-[420px] xl:w-[480px] flex-shrink-0">
+              <TerminalCard />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10">
 
         {/* 通知轮播 */}
-        <div className="mb-6">
+        <div className="mb-4">
           <NotificationCarousel />
         </div>
 
@@ -109,7 +162,7 @@ export function HomePage() {
         </div>
 
         {/* 三栏布局 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
 
           {/* 左侧边栏 - 分类 */}
           <aside className="hidden lg:block lg:col-span-2">
@@ -152,7 +205,7 @@ export function HomePage() {
           <div className="lg:col-span-7">
             {/* 筛选状态 */}
             {selectedCategory && (
-              <div className="mb-5 flex items-center gap-2 animate-fade-in">
+              <div className="mb-4 flex items-center gap-2 animate-fade-in">
                 <span className="text-sm text-muted-foreground">当前筛选:</span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {selectedCategory}
@@ -166,7 +219,7 @@ export function HomePage() {
             )}
 
             {sortedPosts.length === 0 ? (
-              <div className="bg-card rounded-xl border border-border p-12 text-center">
+              <div className="bg-card rounded-xl border border-border p-10 text-center">
                 <svg className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -176,7 +229,7 @@ export function HomePage() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-5">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5">
                 {sortedPosts.map((post, index) => (
                   <article
                     key={post.slug}
@@ -186,7 +239,7 @@ export function HomePage() {
                     <Link to={`/posts/${post.slug}`} className="block">
                       {/* 封面图 */}
                       {post.cover ? (
-                        <div className="aspect-[21/9] overflow-hidden rounded-t-xl">
+                        <div className="aspect-[2/1] overflow-hidden rounded-t-xl">
                           <img
                             src={post.cover}
                             alt={post.title}
@@ -194,7 +247,7 @@ export function HomePage() {
                           />
                         </div>
                       ) : (
-                        <div className="aspect-[21/9] overflow-hidden rounded-t-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                        <div className="aspect-[2/1] overflow-hidden rounded-t-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
                           <svg className="w-12 h-12 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -202,14 +255,14 @@ export function HomePage() {
                       )}
 
                       {/* 内容 */}
-                      <div className="p-5 sm:p-6">
-                        <div className="flex items-center gap-2 mb-2.5">
+                      <div className="p-4 sm:p-5">
+                        <div className="flex items-center gap-2 mb-2">
                           <span className="text-xs font-medium text-primary">{post.category}</span>
                           <span className="text-muted-foreground/30">·</span>
                           <time className="text-xs text-muted-foreground">{post.date}</time>
                         </div>
 
-                        <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2 text-balance">
+                        <h2 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1.5 text-balance">
                           {post.title}
                         </h2>
 
@@ -220,7 +273,7 @@ export function HomePage() {
                         )}
 
                         {post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-3">
+                          <div className="flex flex-wrap gap-1.5 mt-2.5">
                             {post.tags.slice(0, 3).map((tag) => (
                               <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
                                 #{tag}
