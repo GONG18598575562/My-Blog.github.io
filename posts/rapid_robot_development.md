@@ -4,7 +4,7 @@ date: 2026-09-19
 category: 随笔
 subcategory: 思考
 tags: [机器人, 科技]
-cover: /images/robot.png
+cover: /images/rapid_robot_development/robot.png
 ---
 
 # 机器人令人震惊的发展速度

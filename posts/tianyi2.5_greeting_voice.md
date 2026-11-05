@@ -5,6 +5,7 @@ category: 技术方案
 subcategory: 技术
 tags: [技术，方案
 excerpt: 关于遥控控制语音。
+cover: /images/tianyi2.5_greeting_voice/tianyi2.5.jpg
 ---
 
 # 给机器人加上“按键播报”能力：一套通用设计方案

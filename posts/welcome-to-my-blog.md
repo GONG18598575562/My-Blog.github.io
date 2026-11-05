@@ -5,8 +5,8 @@ category: 随笔
 subcategory: 日常
 tags: [介绍, 开始]
 excerpt: 这是我的第一篇博客文章，在这里我将分享技术见解和生活感悟。
-viewCount: 128
-readingTime: 3
+cover: /images/welcome-to-my-blog/avatar.jpg
+
 ---
 
 # 欢迎来到我的博客

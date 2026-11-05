@@ -4,6 +4,7 @@ date: 2026-09-28
 category: 知识
 subcategory: 学习
 tags: [技术, 学习]
+cover: /images/Python OOP/pythonOOP.jpg
 ---
 
 # Python 面向对象编程

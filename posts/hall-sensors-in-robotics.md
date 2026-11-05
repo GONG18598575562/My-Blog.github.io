@@ -5,6 +5,7 @@ category: 知识
 subcategory: 学习
 tags: [知识, 学习]
 excerpt: 霍尔传感器。
+cover: /images/hall-sensors-in-robotics/he.jpg
 ---
 # 霍尔传感器原理详解：从磁场检测到机器人运动控制
 

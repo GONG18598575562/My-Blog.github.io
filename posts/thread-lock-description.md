@@ -4,6 +4,7 @@ date: 2026-10-31
 category: 技术
 subcategory: 知识
 tags: [技术, 知识]
+cover: /images/thread-lock-description/lock.png
 ---
 
 # 线程锁（Thread Lock）：理解多线程资源竞争与 RS485 串口通信
