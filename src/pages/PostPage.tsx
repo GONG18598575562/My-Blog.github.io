@@ -35,18 +35,17 @@ export function PostPage() {
         type="article"
       />
 
-      {/* 封面图 - 全宽 */}
-      {post.cover && (
-        <div className="w-full aspect-[21/9] max-h-[420px] overflow-hidden">
-          <img
-            src={post.cover}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* 封面图 */}
+        {post.cover && (
+          <div className="mb-8 rounded-xl overflow-hidden border border-border/50">
+            <img
+              src={post.cover}
+              alt={post.title}
+              className="w-full aspect-[21/9] object-cover"
+            />
+          </div>
+        )}
         {/* 面包屑 */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link to="/" className="hover:text-primary transition-colors">首页</Link>
