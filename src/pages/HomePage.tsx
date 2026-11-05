@@ -22,11 +22,18 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       <SEO />
 
+      {/* 全页背景装饰 - 漂浮光球 */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/[0.05] rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute top-2/3 right-0 w-[450px] h-[450px] bg-violet-500/[0.04] rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-blue-500/[0.03] rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '3s' }} />
+      </div>
+
       {/* Hero 区域 */}
-      <div className="relative overflow-hidden bg-card/50 border-b border-border/50">
+      <div className="relative z-10 overflow-hidden bg-card/50 border-b border-border/50">
         {/* 动态渐变背景 */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-primary/[0.06] via-purple-500/[0.03] to-transparent" />
@@ -56,7 +63,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
 
         {/* 通知轮播 */}
         <div className="mb-6">
@@ -142,7 +149,7 @@ export function HomePage() {
           </aside>
 
           {/* 中间 - 文章列表 */}
-          <div className="lg:col-span-7 xl:col-span-8">
+          <div className="lg:col-span-7">
             {/* 筛选状态 */}
             {selectedCategory && (
               <div className="mb-5 flex items-center gap-2 animate-fade-in">
@@ -230,22 +237,40 @@ export function HomePage() {
           </div>
 
           {/* 右侧边栏 */}
-          <aside className="hidden xl:block xl:col-span-3">
+          <aside className="hidden lg:block lg:col-span-3">
             <div className="sticky top-20">
               {/* 最新文章 */}
               <div className="card-glass p-5">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">最新文章</h3>
-                <div className="space-y-3">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary glow-sm" />
+                  最新文章
+                </h3>
+                <div className="space-y-1">
                   {latestPosts.map((post) => (
                     <Link
                       key={post.slug}
                       to={`/posts/${post.slug}`}
-                      className="block group"
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 group transition-colors"
                     >
-                      <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1 leading-snug">
-                        {post.title}
-                      </h4>
-                      <time className="text-xs text-muted-foreground mt-0.5 block">{post.date}</time>
+                      {post.cover ? (
+                        <img
+                          src={post.cover}
+                          alt=""
+                          className="w-12 h-9 rounded-md object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-9 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                          {post.title}
+                        </h4>
+                        <time className="text-xs text-muted-foreground mt-0.5 block">{post.date}</time>
+                      </div>
                     </Link>
                   ))}
                 </div>
