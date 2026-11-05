@@ -9,6 +9,7 @@ import { siteConfig } from '../data/config';
 import { addToHistory } from '../utils/storage';
 import { NotFoundPage } from './NotFoundPage';
 import { SEO } from '../components/SEO';
+import { Avatar } from '../components/Avatar';
 import 'highlight.js/styles/github-dark.css';
 
 export function PostPage() {
@@ -65,13 +66,7 @@ export function PostPage() {
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              {siteConfig.user.avatarUrl ? (
-                <img src={siteConfig.user.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
-              ) : (
-                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">
-                  {siteConfig.user.displayName.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.site_author} size="sm" />
               <span className="font-medium text-foreground">{siteConfig.site_author}</span>
             </div>
             <span className="text-border">|</span>

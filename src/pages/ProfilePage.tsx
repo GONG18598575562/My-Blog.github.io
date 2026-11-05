@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { siteConfig } from '../data/config';
 import { getReadingHistory, ReadingHistoryItem } from '../utils/storage';
 import { SEO } from '../components/SEO';
+import { Avatar } from '../components/Avatar';
 
 export function ProfilePage() {
   const [history, setHistory] = useState<ReadingHistoryItem[]>([]);
@@ -30,17 +31,7 @@ export function ProfilePage() {
         {/* 用户信息 */}
         <div className="bg-card rounded-xl border border-border p-6 sm:p-8 mb-6">
           <div className="flex items-center gap-5">
-            {siteConfig.user.avatarUrl ? (
-              <img
-                src={siteConfig.user.avatarUrl}
-                alt={siteConfig.user.displayName}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-2 ring-border"
-              />
-            ) : (
-              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl sm:text-3xl ring-2 ring-border">
-                {siteConfig.user.displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
+            <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="lg" />
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
                 {siteConfig.user.displayName}

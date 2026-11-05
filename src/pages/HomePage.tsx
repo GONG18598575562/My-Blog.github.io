@@ -4,6 +4,7 @@ import { posts, getCategories, getTags } from '../data/posts';
 import { siteConfig } from '../data/config';
 import { NotificationCarousel } from '../components/NotificationCarousel';
 import { SEO } from '../components/SEO';
+import { Avatar } from '../components/Avatar';
 
 export function HomePage() {
   const categories = getCategories();
@@ -27,27 +28,30 @@ export function HomePage() {
 
       {/* Hero 区域 */}
       <div className="relative overflow-hidden bg-card border-b border-border">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-primary/[0.06]" />
-        <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
-          <div className="flex items-center gap-5 sm:gap-6">
-            {siteConfig.user.avatarUrl ? (
-              <img
-                src={siteConfig.user.avatarUrl}
-                alt={siteConfig.user.displayName}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover ring-2 ring-border"
-              />
-            ) : (
-              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl sm:text-3xl ring-2 ring-border">
-                {siteConfig.user.displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
+        {/* 渐变装饰 */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/[0.04] to-transparent" />
+          <div className="absolute bottom-0 left-0 w-96 h-48 bg-gradient-to-tr from-primary/[0.03] to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-10 right-20 w-64 h-64 bg-gradient-to-bl from-blue-400/[0.03] to-transparent rounded-full blur-3xl" />
+        </div>
+        <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div className="flex items-center gap-6 sm:gap-8">
+            <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="lg" />
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
                 {siteConfig.site_name}
               </h1>
-              <p className="text-muted-foreground mt-1.5 text-sm sm:text-base max-w-lg">
+              <p className="text-muted-foreground mt-2 text-base sm:text-lg max-w-xl leading-relaxed">
                 {siteConfig.site_description}
               </p>
+              <div className="flex items-center gap-3 mt-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                  {posts.length} 篇文章
+                </span>
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                  {categories.length} 个分类
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -139,7 +143,7 @@ export function HomePage() {
           </aside>
 
           {/* 中间 - 文章列表 */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 xl:col-span-8">
             {/* 筛选状态 */}
             {selectedCategory && (
               <div className="mb-5 flex items-center gap-2 animate-fade-in">
@@ -227,7 +231,7 @@ export function HomePage() {
           </div>
 
           {/* 右侧边栏 */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden xl:block xl:col-span-3">
             <div className="sticky top-20 space-y-6">
               {/* 最新文章 */}
               <div className="bg-card rounded-xl border border-border p-5">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { siteConfig } from '../data/config';
 import { getCategories, getSubcategories } from '../data/posts';
+import { Avatar } from './Avatar';
 
 export function Header() {
   const navigate = useNavigate();
@@ -47,17 +48,7 @@ export function Header() {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            {siteConfig.user.avatarUrl ? (
-              <img
-                src={siteConfig.user.avatarUrl}
-                alt={siteConfig.user.displayName}
-                className="h-8 w-8 rounded-full object-cover ring-1 ring-border"
-              />
-            ) : (
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm ring-1 ring-border">
-                {siteConfig.user.displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
+            <Avatar src={siteConfig.user.avatarUrl} name={siteConfig.user.displayName} size="sm" />
             <span className="text-lg font-bold text-foreground tracking-tight group-hover:text-primary transition-colors">
               {siteConfig.site_name}
             </span>

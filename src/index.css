@@ -62,6 +62,8 @@
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
     letter-spacing: -0.01em;
+    background-image: radial-gradient(circle at 1px 1px, rgba(var(--color-foreground), 0.03) 1px, transparent 0);
+    background-size: 32px 32px;
   }
 
   #root {
