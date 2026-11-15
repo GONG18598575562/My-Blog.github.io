@@ -4,6 +4,7 @@ date: 2026-11-15
 category: 知识
 subcategory: 学习
 tags: [知识, 学习]
+cover: /DDS/DDS.png
 ---
 # DDS、TCP 与 UDP：机器人通信机制学习笔记
 
